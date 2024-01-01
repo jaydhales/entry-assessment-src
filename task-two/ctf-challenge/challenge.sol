@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.13;
-import {S_M} from "./sec_ret__miss_ive.sol";
+
+import {S_M} from "./secret_missive.sol";
 
 contract GUILD_AUDIT_CHALLENGE is S_M {
     //
@@ -25,18 +26,14 @@ contract GUILD_AUDIT_CHALLENGE is S_M {
     error LevelNotPassed(string);
 
     //level B
-    mapping(address => uint) public trustCount;
+    mapping(address => uint256) public trustCount;
 
     //level D
     mapping(address => address) public registeredProxies;
 
     event LevelUnlocked(address opener, string level, uint256 timeFired);
     event MasterLevelUnlocked(address opener, string level, uint256 timeFired);
-    event PrincipalChanged(
-        address culprit,
-        address newPrincipal,
-        uint256 timeFired
-    );
+    event PrincipalChanged(address culprit, address newPrincipal, uint256 timeFired);
     event ProxyRegistered(address registrar, address proxy, uint256 timeFired);
 
     address public owner;
@@ -55,14 +52,8 @@ contract GUILD_AUDIT_CHALLENGE is S_M {
         assembly {
             $o$ := origin()
         }
-        require(
-            msg.value == (uint32(uint160($t$)) & 0xffff) / 100,
-            "Is it for beans?"
-        );
-        require(
-            c__ == keccak256(abi.encode("0x44\\0x33\\0x22\\0x11\\0x00", $o$)),
-            "Is it for garri"
-        );
+        require(msg.value == (uint32(uint160($t$)) & 0xffff) / 100, "Is it for beans?");
+        require(c__ == keccak256(abi.encode("0x44\\0x33\\0x22\\0x11\\0x00", $o$)), "Is it for garri");
 
         unlocked[LEVEL_A] = true;
 
@@ -81,21 +72,14 @@ contract GUILD_AUDIT_CHALLENGE is S_M {
             trustCount[msg.sender] = 0;
             emit DiSCoNnEcTeD();
         }
-        (bool result, ) = msg.sender.call("");
+        (bool result,) = msg.sender.call("");
         if (result) {
             trustCount[msg.sender]++;
-            if (
-                trustCount[msg.sender] ==
-                uint8(uint256(keccak256("solved"))) % 15
-            ) {
+            if (trustCount[msg.sender] == uint8(uint256(keccak256("solved"))) % 15) {
                 unlocked[LEVEL_B] = true;
 
                 levels[tx.origin][LEVEL_B] = true;
-                emit MasterLevelUnlocked(
-                    tx.origin,
-                    string(LEVEL_B),
-                    block.timestamp
-                );
+                emit MasterLevelUnlocked(tx.origin, string(LEVEL_B), block.timestamp);
             }
         }
     }
@@ -104,8 +88,9 @@ contract GUILD_AUDIT_CHALLENGE is S_M {
 
     function solve_challenge_C(address _newPrincipal) public {
         if (tx.origin != msg.sender) {
-            if (_newPrincipal.code.length > 0)
+            if (_newPrincipal.code.length > 0) {
                 revert("Idan no suppose get code");
+            }
             currentPrincipal = _newPrincipal;
             emit PrincipalChanged(tx.origin, _newPrincipal, block.timestamp);
         }
@@ -133,17 +118,12 @@ contract GUILD_AUDIT_CHALLENGE is S_M {
         __hasSolved__(LEVEL_C);
         __hasNotSolved__(LEVEL_D);
         assert(registeredProxies[tx.origin] != address(0));
-        if (registeredProxies[tx.origin].code.length == 0)
+        if (registeredProxies[tx.origin].code.length == 0) {
             revert("PROXIES SHOULD CONTAIN CODE");
+        }
         assert(
-            S_M(registeredProxies[tx.origin]).__expected__().__boom__ ==
-                uint16(
-                    bytes2(
-                        bytes16(
-                            keccak256(abi.encode(registeredProxies[tx.origin]))
-                        )
-                    )
-                )
+            S_M(registeredProxies[tx.origin]).__expected__().__boom__
+                == uint16(bytes2(bytes16(keccak256(abi.encode(registeredProxies[tx.origin])))))
         );
 
         unlocked[LEVEL_D] = true;
