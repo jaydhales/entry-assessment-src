@@ -1,4 +1,6 @@
 // SPDX-License-Identifier: MIT
+pragma solidity 0.8.23;
+
 interface S_M {
     struct MSS_SS_SSM {
         uint8 offset__0;
@@ -17,4 +19,3 @@ interface S_M {
 
     function __expected__() external view returns (MSS_SS_SSM memory);
 }
-
